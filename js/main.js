@@ -168,8 +168,6 @@ createRestaurantHTML = (restaurant) => {
   name.innerHTML = restaurant.name;
   li.append(name);
 
-  const name1  = Object.create(name);
-
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);
@@ -181,15 +179,12 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
-  li.append(more)
+  //li.append(more);
 
   const div = document.createElement('div');
   div.className = "innder-div";
-  div.appendChild(name1);
-  div.appendChild(address);
-  div.appendChild(more);
+  div.append(more);
   li.append(div);
-
   return li
 }
 
