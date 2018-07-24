@@ -73,10 +73,10 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
  */
 initMap = () => {
   self.newMap = L.map('map', {
-        center: [40.722216, -73.987501],
-        zoom: 12,
-        scrollWheelZoom: false
-      });
+    center: [40.722216, -73.987501],
+    zoom: 12,
+    scrollWheelZoom: false
+  });
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
     mapboxToken: 'pk.eyJ1IjoibWFudGhhbnAiLCJhIjoiY2pqZmJxZm5tMnR6ZDN2dGV0YWE5Y215dSJ9.eWjbH9wUZVx6IfnnfwOAag',
     maxZoom: 18,
@@ -158,11 +158,16 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
-  const image = document.createElement('img');
-  image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt = 'Restaurant named ' + restaurant.name;
-  li.append(image);
+  const figure = document.createElement('figure');
+  const imgSrc = DBHelper.imageUrlForRestaurant(restaurant).split('.');
+  const pictureElement = `<picture><source media="(max-width: 385px)" srcset="${imgSrc[0]}-320_1x.${imgSrc[1]} 1x, ${imgSrc[0]}-400_1x.${imgSrc[1]} 2x">
+  <source media="(min-width: 386px) and (max-width: 550px)" srcset="${imgSrc[0]}-400_1x.${imgSrc[1]}, ${imgSrc[0]}-600_2x.${imgSrc[1]} 2x">
+  <source media="(min-width: 551px) and (max-width: 736px)" srcset="${imgSrc[0]}-320_1x.${imgSrc[1]}, ${imgSrc[0]}-400_1x.${imgSrc[1]} 2x">
+  <source media="(min-width: 737px) and (max-width: 1455px)" srcset="${imgSrc[0]}-400_1x.${imgSrc[1]}, ${imgSrc[0]}-600_2x.${imgSrc[1]} 2x">
+  <source media="(min-width: 1456px)" srcset="${imgSrc[0]}-600_2x.${imgSrc[1]}, ${imgSrc[0]}.${imgSrc[1]} 2x">
+  <img class="restaurant-img" src="${imgSrc[0]}.${imgSrc[1]}" alt="Restaurant named ${restaurant.name}"></picture>`;
+  figure.innerHTML = pictureElement;
+  li.append(figure);
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
@@ -202,7 +207,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 
-} 
+}
 /* addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
