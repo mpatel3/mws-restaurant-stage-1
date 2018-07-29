@@ -6,6 +6,12 @@ var newMap;
  */
 document.addEventListener('DOMContentLoaded', (event) => {  
   initMap();
+  
+  /**
+   * Focus on header 
+   */
+  const header = document.getElementById("page-header");
+  header.focus();
 });
 
 /**
@@ -22,7 +28,7 @@ initMap = () => {
         scrollWheelZoom: false
       });
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-        mapboxToken: '<your MAPBOX API KEY HERE>',
+        mapboxToken: 'pk.eyJ1IjoibWFudGhhbnAiLCJhIjoiY2pqZmJxZm5tMnR6ZDN2dGV0YWE5Y215dSJ9.eWjbH9wUZVx6IfnnfwOAag',
         maxZoom: 18,
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
           '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -34,22 +40,6 @@ initMap = () => {
     }
   });
 }  
- 
-/* window.initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
-      self.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    }
-  });
-} */
 
 /**
  * Get current restaurant from page URL.
@@ -86,9 +76,15 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
-  const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  const figure = document.getElementById('restaurant-img');
+  const imgSrc = DBHelper.imageUrlForRestaurant(restaurant).split('.');
+  const pictureElement = `<picture><source media="(max-width: 550px)" srcset="${imgSrc[0]}-400_1x.${imgSrc[1]} 1x">
+  <source media="(min-width: 551px) and (max-width: 736px)" srcset="${imgSrc[0]}.${imgSrc[1]}">
+  <source media="(min-width: 737px) and (max-width: 1180px)" srcset="${imgSrc[0]}-400_1x.${imgSrc[1]}">
+  <source media="(min-width: 1181px)" srcset="${imgSrc[0]}-600_2x.${imgSrc[1]} 1x, ${imgSrc[0]}.${imgSrc[1]} 2x">
+  <img class="restaurant-img" src="${imgSrc[0]}.${imgSrc[1]}" alt="This is image of a restaurant named ${restaurant.name}"></picture>`;
+  figure.innerHTML = pictureElement;
+
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -108,6 +104,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
   const hours = document.getElementById('restaurant-hours');
   for (let key in operatingHours) {
     const row = document.createElement('tr');
+    row.setAttribute("tabindex","0");
 
     const day = document.createElement('td');
     day.innerHTML = key;
@@ -127,6 +124,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
+  title.setAttribute("tabindex","0");
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
@@ -137,8 +135,8 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     return;
   }
   const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
+  reviews.forEach((review,index) => {
+    ul.appendChild(createReviewHTML(review, index));
   });
   container.appendChild(ul);
 }
@@ -146,24 +144,17 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 /**
  * Create review HTML and add it to the webpage.
  */
-createReviewHTML = (review) => {
+createReviewHTML = (review, index) => {
   const li = document.createElement('li');
-  const name = document.createElement('p');
-  name.innerHTML = review.name;
-  li.appendChild(name);
+  li.classList.add('restaurant-review-container');
+  let reviewTemplateString= ``;
 
-  const date = document.createElement('p');
-  date.innerHTML = review.date;
-  li.appendChild(date);
+  reviewTemplateString += `<div id="reviewer_name_${index}" hidden>Reviewer name is ${review.name}</div><p tabindex="0" aria-labelledby="reviewer_name_${index}">${review.name}</p>
+  <div id="review_date_${index}" hidden>Review date is ${review.date}</div><p tabindex="0" aria-labelledby="review_date_${index}">${review.date}</p>
+  <div id="review_ratings_${index}" hidden>Ratings: Out of 5 is ${review.rating}</div><p tabindex="0" aria-labelledby="review_ratings_${index}">${review.rating}</p>
+  <div id="review_comments_${index}" hidden>Review comment is ${review.comments}</div><p tabindex="0" aria-labelledby="review_comments_${index}">${review.comments}</p>`;
 
-  const rating = document.createElement('p');
-  rating.innerHTML = `Rating: ${review.rating}`;
-  li.appendChild(rating);
-
-  const comments = document.createElement('p');
-  comments.innerHTML = review.comments;
-  li.appendChild(comments);
-
+  li.innerHTML = reviewTemplateString;
   return li;
 }
 
