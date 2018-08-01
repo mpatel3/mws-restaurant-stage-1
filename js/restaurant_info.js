@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
    */
   const header = document.getElementById("page-header");
   header.focus();
+
+  //register Service worker.
+  registerServiceWorker();
 });
 
 /**
@@ -164,6 +167,7 @@ createReviewHTML = (review, index) => {
 fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
+  li.setAttribute("aria-current","page");
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
 }
@@ -182,4 +186,13 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+// Register service worker.
+registerServiceWorker = () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+             .register('./service-worker.js')
+             .then(function() { });
+  }
 }

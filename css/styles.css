@@ -63,17 +63,17 @@ figure {
   text-transform: uppercase;
 }
 /* ====================== Navigation ====================== */
-nav {
+nav.page-header {
   width: 100%;
   height: auto;
   background-color: #252831;
   text-align: center;
   padding: 0.1em;
 }
-nav h1 {
+nav.page-header h1 {
   margin: 0.60rem;
 }
-nav h1 a {
+nav.page-header h1 a {
   color: #fff;
   font-size: 1.3rem;
   font-weight: 200;
@@ -189,7 +189,7 @@ nav h1 a {
   min-height: 200px;
   min-width: 100%;
 }
-#restaurants-list li h1 {
+#restaurants-list li h2 {
   color: #0a0a0a;
   font-family: 'Lora', Arial,sans-serif;
   font-size: 1.5rem;
@@ -410,7 +410,7 @@ nav h1 a {
     min-height: 320px;
   }
 
-  #restaurants-list li h1 {
+  #restaurants-list li h2 {
     font-size: 1.3rem;
   }
 
@@ -418,11 +418,11 @@ nav h1 a {
     font-size: 0.80rem;
   }
 
-  nav h1 {
+  nav.page-header h1 {
     margin: 0.50rem;
   }
 
-  nav h1 a {
+  nav.page-header h1 a {
     font-size: 1rem;  
   }
   
