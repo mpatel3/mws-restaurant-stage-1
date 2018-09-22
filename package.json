@@ -1,0 +1,38 @@
+{
+  "name": "mws-restaurant-stage-1",
+  "version": "1.0.0",
+  "description": "Mobile-Web-Specialist-Application",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mpatel3/mws-restaurant-stage-1.git"
+  },
+  "keywords": [
+    "MWS"
+  ],
+  "author": "Manthan Patel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mpatel3/mws-restaurant-stage-1/issues"
+  },
+  "homepage": "https://github.com/mpatel3/mws-restaurant-stage-1#readme",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "leaflet": "^1.3.1",
+    "picturefill": "^3.0.2"
+  },
+  "devDependencies": {
+    "del": "^3.0.0",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-clean-css": "^3.10.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-htmlmin": "^4.0.0",
+    "gulp-uglify-es": "^1.0.4",
+    "gulp-usemin": "^0.3.29",
+    "idb": "^2.1.3",
+    "run-sequence": "^2.2.1"
+  }
+}

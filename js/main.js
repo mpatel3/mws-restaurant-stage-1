@@ -8,7 +8,9 @@ var markers = []
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
-  initMap(); // added 
+  // indexedDB
+  self.dbPromise = indexedDBHelper.createAppIndexedDB();
+  initMap(); // added
   fetchNeighborhoods();
   fetchCuisines();
 
@@ -26,7 +28,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
  * Fetch all neighborhoods and set their HTML.
  */
 fetchNeighborhoods = () => {
-  DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+  DBHelper.fetchNeighborhoods(self.dbPromise, (error, neighborhoods) => {
     if (error) { // Got an error
       console.error(error);
     } else {
@@ -53,7 +55,7 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
  * Fetch all cuisines and set their HTML.
  */
 fetchCuisines = () => {
-  DBHelper.fetchCuisines((error, cuisines) => {
+  DBHelper.fetchCuisines(self.dbPromise, (error, cuisines) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
@@ -110,8 +112,7 @@ updateRestaurants = () => {
 
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
-
-  DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
+  DBHelper.fetchRestaurantByCuisineAndNeighborhood(self.dbPromise, cuisine, neighborhood, (error, restaurants) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
@@ -157,13 +158,7 @@ createRestaurantHTML = (restaurant) => {
 
   const figure = document.createElement('figure');
   const imgSrc = DBHelper.imageUrlForRestaurant(restaurant).split('.');
-  const pictureElement = `<picture><source media="(max-width: 385px)" srcset="${imgSrc[0]}-320_1x.${imgSrc[1]} 1x, ${imgSrc[0]}-400_1x.${imgSrc[1]} 2x">
-  <source media="(min-width: 386px) and (max-width: 550px)" srcset="${imgSrc[0]}-400_1x.${imgSrc[1]}, ${imgSrc[0]}-600_2x.${imgSrc[1]} 2x">
-  <source media="(min-width: 551px) and (max-width: 736px)" srcset="${imgSrc[0]}-320_1x.${imgSrc[1]}, ${imgSrc[0]}-400_1x.${imgSrc[1]} 2x">
-  <source media="(min-width: 737px) and (max-width: 1455px)" srcset="${imgSrc[0]}-400_1x.${imgSrc[1]}, ${imgSrc[0]}-600_2x.${imgSrc[1]} 2x">
-  <source media="(min-width: 1456px)" srcset="${imgSrc[0]}-600_2x.${imgSrc[1]}, ${imgSrc[0]}.${imgSrc[1]} 2x">
-  <img class="restaurant-img" tabindex="0" src="${imgSrc[0]}.${imgSrc[1]}" alt="Picture of a restaurant named ${restaurant.name}"></picture>`;
-  figure.innerHTML = pictureElement;
+  figure.innerHTML = DBHelper.createPictureElement('MAIN',imgSrc,restaurant.name);
   li.append(figure);
 
   const name = document.createElement('h2'); // using h1 instead of h2 for better semantics.

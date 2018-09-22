@@ -5,6 +5,8 @@ var newMap;
  * Initialize map as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {  
+  self.dbPromise = indexedDBHelper.createAppIndexedDB();
+  
   initMap();
   
   /**
@@ -57,7 +59,7 @@ fetchRestaurantFromURL = (callback) => {
     error = 'No restaurant id in URL'
     callback(error, null);
   } else {
-    DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+    DBHelper.fetchRestaurantById(self.dbPromise, id, (error, restaurant) => {
       self.restaurant = restaurant;
       if (!restaurant) {
         console.error(error);
@@ -81,14 +83,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const figure = document.getElementById('restaurant-img');
   const imgSrc = DBHelper.imageUrlForRestaurant(restaurant).split('.');
-  const pictureElement = `<picture><source media="(max-width: 550px)" srcset="${imgSrc[0]}-400_1x.${imgSrc[1]} 1x">
-  <source media="(min-width: 551px) and (max-width: 736px)" srcset="${imgSrc[0]}.${imgSrc[1]}">
-  <source media="(min-width: 737px) and (max-width: 1180px)" srcset="${imgSrc[0]}-400_1x.${imgSrc[1]}">
-  <source media="(min-width: 1181px)" srcset="${imgSrc[0]}-600_2x.${imgSrc[1]} 1x, ${imgSrc[0]}.${imgSrc[1]} 2x">
-  <img class="restaurant-img" src="${imgSrc[0]}.${imgSrc[1]}" alt="This is image of a restaurant named ${restaurant.name}"></picture>`;
-  figure.innerHTML = pictureElement;
-
-
+  figure.innerHTML = DBHelper.createPictureElement('SINGLE_RESTAURANT',imgSrc,restaurant.name);
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 

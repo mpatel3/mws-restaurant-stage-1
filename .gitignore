@@ -20,6 +20,7 @@
 *.tar
 *.zip
 node_modules/
+build/
 
 # Logs and databases #
 ######################
