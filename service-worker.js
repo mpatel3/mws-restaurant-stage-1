@@ -11,6 +11,7 @@ if(APP_ENV === 'prod') {
     var filesToCache = [
         '/',
         '/index.html',
+        '/restaurant.html',
         '/js/vendor.js',
         '/js/app_main.js',
         '/js/app_restaurant_info.js',
@@ -38,8 +39,10 @@ if(APP_ENV === 'prod') {
     var filesToCache = [
         '/',
         '/index.html',
-        '/js/main.js',
+        '/restaurant.html',
+        '/js/idb-app.js',
         '/js/dbhelper.js',
+        '/js/main.js',
         '/js/picturefill.min.js',
         '/js/restaurant_info.js',
         '/css/styles.css',
@@ -74,11 +77,7 @@ self.addEventListener('install', function (event) {
  */
 self.addEventListener('fetch', function (event) {
     
-    if(APP_ENV === 'dev') {
-        var dataUrl = 'http://localhost:8000/restaurant.html'; 
-    } else {
-        var dataUrl = 'http://localhost:8000/build/restaurant.html';
-    }
+    var dataUrl = 'http://localhost:8000/restaurant.html';
     
     if (event.request.url.indexOf(dataUrl) > -1) {
         /*
@@ -91,21 +90,26 @@ self.addEventListener('fetch', function (event) {
                  * If a url is new then first capture it and then save it to cache so that It can be server from cache in future.
                  */
                 
-                return fetch(event.request).then(function (response) {
+                return caches.match(dataUrl).then(function (response) {
                     cache.put(event.request.url, response.clone());
                     return response;
-                }).catch(function(error){
+                });
+                
+                //  return fetch(dataUrl).then(function (response) {
+                //     cache.put(event.request.url, response.clone());
+                //     return response;
+                // }).catch(function(error){
                     
                     /**
                      * Fallback for fetch event If Fetch fails and if we have last request url cached then serve response of that
                      * last URL. 
                      */
                     
-                    return caches.match(event.request).then(function (response) {
-                        console.log(response);
-                        return response || fetch(event.request);
-                    })
-                });
+                    // return caches.match(event.request).then(function (response) {
+                    //     console.log(response);
+                    //     return response || fetch(event.request);
+                    // })
+                //});
             })
         );
     } else {
